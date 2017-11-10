@@ -49,7 +49,7 @@ extension UnSubackPacket : ControlPacket {
             try writer.write(from: buffer)
 
         } catch {
-            throw AphidError()
+            throw SunapsisError()
 
         }
     }

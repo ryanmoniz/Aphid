@@ -17,7 +17,7 @@
 import Foundation
 
 import XCTest
-@testable import Aphid
+@testable import Sunapsis
 
 class PacketTests: XCTestCase {
 

@@ -16,7 +16,7 @@
 
 
 import XCTest
-@testable import Aphid
+@testable import Sunapsis
 
 #if os(OSX) || os(iOS)
     import Darwin
@@ -24,9 +24,9 @@ import XCTest
     import Glibc
 #endif
 
-class AphidTests: XCTestCase, MQTTDelegate {
+class SunapsisTests: XCTestCase, MQTTDelegate {
     
-    private var aphid: Aphid!
+    private var sunapsis: Sunapsis!
     
     var testCase = ""
     var receivedCount = 0
@@ -40,7 +40,7 @@ class AphidTests: XCTestCase, MQTTDelegate {
     
     var tokens = [String]()
     
-    static var allTests: [(String, (AphidTests) -> () throws -> Void)] {
+    static var allTests: [(String, (SunapsisTests) -> () throws -> Void)] {
         return [
             ("testConnect", testConnect),
             ("testKeepAlive", testKeepAlive),
@@ -53,11 +53,11 @@ class AphidTests: XCTestCase, MQTTDelegate {
         super.setUp()
         
         let clientId = "Aaron"
-        aphid = Aphid(clientId: clientId)
+        sunapsis = Sunapsis(clientId: clientId)
         
-        aphid.setWill(topic: "lastWillAndTestament/",message: "Client \(clientId) Closed Unexpectedly", willQoS: .atMostOnce, willRetain: false)
+        sunapsis.setWill(topic: "lastWillAndTestament/",message: "Client \(clientId) Closed Unexpectedly", willQoS: .atMostOnce, willRetain: false)
         
-        aphid.delegate = self
+        sunapsis.delegate = self
         
     }
     
@@ -66,7 +66,7 @@ class AphidTests: XCTestCase, MQTTDelegate {
         testCase = "connect"
         expectation = expectation(description: "Received Connack")
         do {
-            try aphid.connect()
+            try sunapsis.connect()
         } catch {
             expectation.fulfill()
             print("Error: \(error.localizedDescription)")
@@ -85,7 +85,7 @@ class AphidTests: XCTestCase, MQTTDelegate {
         receivedCount = 0
         expectation = expectation(description: "Keep Alive Ping")
         do {
-        try aphid.connect()
+        try sunapsis.connect()
         } catch {
             expectation.fulfill()
             print("Error: \(error.localizedDescription)")
@@ -104,11 +104,11 @@ class AphidTests: XCTestCase, MQTTDelegate {
         expectation = expectation(description: "Received a message")
         do {
         
-        try aphid.connect()
+        try sunapsis.connect()
 
-        aphid.subscribe(topic: [topic], qoss: [.exactlyOnce])
+        sunapsis.subscribe(topic: [topic], qoss: [.exactlyOnce])
 
-        aphid.publish(topic: topic, withMessage: message, qos: QosType.exactlyOnce)
+        sunapsis.publish(topic: topic, withMessage: message, qos: QosType.exactlyOnce)
         } catch {
             expectation.fulfill()
             print("Error: \(error.localizedDescription)")
@@ -129,11 +129,11 @@ class AphidTests: XCTestCase, MQTTDelegate {
         expectation = expectation(description: "Received message exactly Once")
 
         do {
-            try aphid.connect()
+            try sunapsis.connect()
             
-            aphid.subscribe(topic: [topic], qoss: [.exactlyOnce])
+            sunapsis.subscribe(topic: [topic], qoss: [.exactlyOnce])
             
-            aphid.publish(topic: topic, withMessage: message, qos: .exactlyOnce)
+            sunapsis.publish(topic: topic, withMessage: message, qos: .exactlyOnce)
         } catch {
             expectation.fulfill()
             print("Error: \(error.localizedDescription)")
@@ -150,7 +150,7 @@ class AphidTests: XCTestCase, MQTTDelegate {
     func disconnect() {
         disconnectExpectation = expectation(description: "Disconnected")
         
-        aphid.disconnect()
+        sunapsis.disconnect()
         
         waitForExpectations(timeout: 20) {
             error in

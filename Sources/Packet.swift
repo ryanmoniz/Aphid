@@ -19,8 +19,8 @@ import Socket
 
 protocol ControlPacket {
     var description: String { get }
-    mutating func write(writer: SocketWriter) throws
-    mutating func unpack(reader: SocketReader)
+    mutating func write(writer: ConnectionWriter) throws
+    mutating func unpack(reader: ConnectionReader)
     func validate() -> MQTTErrors
 }
 

@@ -1,14 +1,17 @@
-# Aphid
+# Sunapsis
 
-🚫 This project is no longer maintained.
+--
+ORIGIN
+Greek sunapsis, from sun- ‘together’ + hapsis ‘joining’, from haptein ‘to join’
 
-A lightweight MQTT 3.1.1 client written in pure Swift 3
+A lightweight MQTT 3.1.1 client written in pure Swift 4 with support for WiFi/Cellular on iOS and Linux. 
 
-[![Build Status](https://travis-ci.org/IBM-Swift/Aphid.svg?branch=master)](https://travis-ci.org/IBM-Swift/Aphid)
-![](https://img.shields.io/badge/Swift-3.1%20RELEASE-orange.svg?style=flat)
+Forked from Aphid project that was discontinued.
+
+![](https://img.shields.io/badge/Swift-4%20RELEASE-orange.svg?style=flat)
 ![](https://img.shields.io/badge/platform-Linux,%20macOS,%20ARM%20Linux-blue.svg?style=flat)
 
-## Setup your project to use Aphid 
+## Setup your project to use Sunapsis 
 
 1. On Linux, install OpenSSL (if not already installed):
 
@@ -24,7 +27,7 @@ A lightweight MQTT 3.1.1 client written in pure Swift 3
     let package = Package(
         name: "ProjectName",
         dependencies: [
-            .Package(url: "https://github.com/IBM-Swift/Aphid.git", majorVersion: 0)
+            .Package(url: "https://github.com/IBM-Swift/Sunapsis.git", majorVersion: 0)
         ])
     ```
 3. Create XCode project to build library (Optional)
@@ -33,10 +36,10 @@ A lightweight MQTT 3.1.1 client written in pure Swift 3
     $ swift package generate-xcodeproj
     ```
 
-4. In Sources/main.swift, import the Aphid module.
+4. In Sources/main.swift, import the Sunapsis module.
 
     ```swift
-    import Aphid
+    import Sunapsis
     ```
 
 5. Note: build locally with:

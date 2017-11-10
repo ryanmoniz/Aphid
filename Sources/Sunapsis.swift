@@ -15,17 +15,19 @@
  */
 
 import Foundation
+import Dispatch
+
 import Socket
 import SSLService
-import Dispatch
+
 
 public typealias Byte = UInt8
 
-open class Aphid {
+open class Sunapsis {
 
     public var delegate: MQTTDelegate?
-
-    internal var socket: Socket?
+    
+    internal var socket: SocketBackend?
 
     internal var buffer: Data
 
@@ -53,20 +55,33 @@ open class Aphid {
     // Initial Connect
     public func connect(withSSL: Bool = false, certPath: String? = nil, keyPath: String? = nil) throws {
 
-        if socket == nil {
-            socket = try Socket.create(family: .inet6, type: .stream, proto: .tcp)
-        }
-        
-        try socket!.setBlocking(mode: false)
-        
-        try socket!.connect(to: config.host, port: config.port)
+        #if os(OSX) || os(iOS)
+            //internal var socket = SocketFactory<MQTTStream>.sharedInstance()
+            if socket == nil {
+                //socket = try SocketFactory<MQTTStream>.sharedInstance().create
+            }
+        #elseif os(Linux)
+            if socket == nil {
+                socket = try SocketFactory<SocketLayer>.sharedInstance().create(family: .inet6, type: .stream, proto: .tcp)
+            }
+        #endif
 
+        #if os(Linux)
+			try socket!.setBlocking(mode: false)
+        #endif
+        
+        #if os(OSX) || os(iOS)
+            if let _socket = socket {
+                try _socket.connect(to: config.host, port: config.port, timeout:0)
+            }
+        #elseif os(Linux)
+            try socket!.connect(to: config.host, port: config.port)
+        #endif
+        
+        
         requestHandler(packet: ConnectPacket()) {
-            
             self.startTimer()
-
             self.read()
-            
             config.status = .connected
         }
     }
@@ -75,24 +90,17 @@ open class Aphid {
     }
 
     public func disconnect() {
-        
         guard config.status != .disconnected else {
             print(Errors.alreadyDisconnected)
             return
         }
 
         requestHandler(packet: DisconnectPacket()) {
-
             config.status = .disconnected
-
             sleep(config.quiesce)   // Sleep to allow buffering packets to be sent
-
             self.socket?.close()
-
             self.buffer = Data()
-
             self.keepAliveTimer = nil
-
             self.delegate?.didLoseConnection(error: nil)
         }
     }
@@ -131,7 +139,6 @@ open class Aphid {
     }
 
     internal func requestHandler(packet: ControlPacket, onCompletion: (()->())? = nil) {
-        
         guard let sock = socket else {
             delegate?.didLoseConnection(error: Errors.socketNotOpen)
             return
@@ -159,7 +166,7 @@ open class Aphid {
     }
 }
 
-extension Aphid {
+extension Sunapsis {
 
     public func setWill(topic: String, message: String? = nil, willQoS: QosType = .atMostOnce, willRetain: Bool = false) {
         config.will = LastWill(topic: topic, message: message, qos: willQoS, retain: willRetain)
@@ -249,7 +256,7 @@ extension Aphid {
     }
 }
 
-extension Aphid {
+extension Sunapsis {
 
     internal func startTimer() {
 
@@ -280,7 +287,7 @@ extension Aphid {
     }
 }
     
-extension Aphid {
+extension Sunapsis {
     internal func newControlPacket(header: Byte, bodyLength: Int, data: Data) -> ControlPacket? {
 
         guard let code: ControlCode = ControlCode(rawValue: (header & 0xF0)) else {
@@ -323,7 +330,7 @@ extension Aphid {
     }
 }
 // SSL Certification Initialization: Must be called before connect
-extension Aphid {
+extension Sunapsis {
 
     public func setSSL(certPath: String? = nil, keyPath: String? = nil) throws {
 
