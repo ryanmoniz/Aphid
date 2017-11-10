@@ -24,7 +24,7 @@ struct PingreqPacket: ControlPacket {
         return String(describing: ControlCode.pingreq)
     }
 
-    mutating func write(writer: SocketWriter) throws {
+    mutating func write(writer: ConnectionWriter) throws {
         var buffer = Data(capacity: 2)
 
         buffer.append(ControlCode.pingreq.rawValue.data)
@@ -39,7 +39,7 @@ struct PingreqPacket: ControlPacket {
         }
     }
 
-    mutating func unpack(reader: SocketReader) {
+    mutating func unpack(reader: ConnectionReader) {
     }
 
     func validate() -> MQTTErrors {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol SocketBackend {
+public protocol SocketBackend: ConnectionWriter, ConnectionReader {
     //MARK: sharedInstance
     static func className() -> String
     

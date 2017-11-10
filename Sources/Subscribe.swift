@@ -52,7 +52,7 @@ extension SubscribePacket : ControlPacket {
         return String(describing: ControlCode.subscribe)
     }
 
-    mutating func write(writer: SocketWriter) throws {
+    mutating func write(writer: ConnectionWriter) throws {
         var packet = Data(capacity: 512)
         var buffer = Data(capacity: 512)
 
@@ -87,7 +87,7 @@ extension SubscribePacket : ControlPacket {
 
     }
 
-    mutating func unpack(reader: SocketReader) {
+    mutating func unpack(reader: ConnectionReader) {
     }
     func validate() -> MQTTErrors {
         return .accepted

@@ -40,7 +40,7 @@ extension SubackPacket : ControlPacket {
         return String(describing: ControlCode.suback)
     }
 
-    mutating func write(writer: SocketWriter) throws {
+    mutating func write(writer: ConnectionWriter) throws {
         var buffer = Data(capacity: 128)
         
         buffer.append(ControlCode.suback.rawValue.data)
@@ -57,7 +57,7 @@ extension SubackPacket : ControlPacket {
         }
     }
 
-    mutating func unpack(reader: SocketReader) {
+    mutating func unpack(reader: ConnectionReader) {
     }
 
     func validate() -> MQTTErrors {

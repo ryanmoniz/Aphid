@@ -29,4 +29,48 @@ final class SocketLayer: SocketBackend {
             _socket.close()
         }
     }
+    
+    func write(from data: Data) throws -> Int {
+        if let _socket = socket {
+           try _socket.write(from: data)
+        }
+        return 0
+    }
+    
+    func write(from data: NSData) throws -> Int {
+        if let _socket = socket {
+            try _socket.write(from: data)
+        }
+        return 0
+    }
+    
+    func write(from string: String) throws -> Int {
+        if let _socket = socket {
+            try _socket.write(from: string)
+        }
+        return 0
+    }
+    
+    func readString() throws -> String? {
+        if let _socket = socket {
+            return try _socket.readString()
+        }
+        return nil
+    }
+    
+    func read(into data: inout Data) throws -> Int {
+        if let _socket = socket {
+            return try _socket.read(into: &data)
+        }
+        return 0
+    }
+    
+    func read(into data: NSMutableData) throws -> Int {
+        if let _socket = socket {
+            return try _socket.read(into: data)
+        }
+        
+        return 0
+    }
+    
 }

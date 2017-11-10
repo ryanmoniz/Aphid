@@ -32,7 +32,7 @@ struct PubrelPacket : ControlPacket {
         return String(describing: ControlCode.pubrel)
     }
     
-    mutating func write(writer: SocketWriter) throws {
+    mutating func write(writer: ConnectionWriter) throws {
         var buffer = Data(capacity: 128)
       
         buffer.append((ControlCode.pubrel.rawValue | 0x02).data)
@@ -48,7 +48,7 @@ struct PubrelPacket : ControlPacket {
         }
     }
     
-    mutating func unpack(reader: SocketReader) {
+    mutating func unpack(reader: ConnectionReader) {
     }
     
     func validate() -> MQTTErrors {

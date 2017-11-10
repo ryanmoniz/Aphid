@@ -72,10 +72,10 @@ open class Sunapsis {
         
         #if os(OSX) || os(iOS)
             if let _socket = socket {
-                try _socket.connect(to: config.host, port: config.port, timeout:0)
+                try _socket.connect(to: config.host, port: config.port, timeout:10)
             }
         #elseif os(Linux)
-            try socket!.connect(to: config.host, port: config.port)
+            try socket!.connect(to: config.host, port: config.port, timeout:10)
         #endif
         
         
@@ -160,7 +160,6 @@ open class Sunapsis {
 
             } catch {
                 print(error)
-                
             }
         }
     }
@@ -179,9 +178,11 @@ extension Sunapsis {
             return
         }
 
+        #if os(OSX) || os(iOS)
+        //need code to read from stream?
+        #elseif os(Linux)
         let iochannel = DispatchIO(type: DispatchIO.StreamType.stream, fileDescriptor: sock.socketfd, queue: readQueue, cleanupHandler: {
             error in
-            
         })
 
         iochannel.read(offset: off_t(0), length: 1, queue: readQueue) {
@@ -193,15 +194,14 @@ extension Sunapsis {
             }
 
             if let d = bytes {
-
                 self.buffer.append(d, count: d.count)
-
                 if self.buffer.count >= self.bound {
                     self.unpack()
                 }
                 self.read()
             }
         }
+        #endif
     }
 
     internal func parseHeader() -> (Byte, Int)? {
@@ -338,9 +338,12 @@ extension Sunapsis {
         
         config.SSLConfig = SSLConfig
 
-         if socket == nil { socket = try Socket.create(family: .inet6, type: .stream, proto: .tcp) }
+        #if os(OSX) || os(iOS)
 
-        socket?.delegate = try SSLService(usingConfiguration: SSLConfig)
+        #elseif os(Linux)
+            if socket == nil { socket = try Socket.create(family: .inet6, type: .stream, proto: .tcp) }
+            socket?.delegate = try SSLService(usingConfiguration: SSLConfig)
+        #endif
     }
 
     public func setSSL(with ChainFilePath: String, usingSelfSignedCert: Bool) throws {
@@ -349,9 +352,12 @@ extension Sunapsis {
         
         config.SSLConfig = SSLConfig
 
-        if socket == nil { socket = try Socket.create(family: .inet6, type: .stream, proto: .tcp) }
-
-        socket?.delegate = try SSLService(usingConfiguration: SSLConfig)
+        #if os(OSX) || os(iOS)
+            
+        #elseif os(Linux)
+            if socket == nil { socket = try Socket.create(family: .inet6, type: .stream, proto: .tcp) }
+            socket?.delegate = try SSLService(usingConfiguration: SSLConfig)
+        #endif
     }
 
     public func setSSL(with CACertificatePath: String?, using CertificateFile: String?, with KeyFile: String?, selfSignedCerts: Bool) throws {
@@ -362,8 +368,11 @@ extension Sunapsis {
                                                 usingSelfSignedCerts: selfSignedCerts)
         config.SSLConfig = SSLConfig
 
-        if socket == nil { socket = try Socket.create(family: .inet6, type: .stream, proto: .tcp) }
-
-        socket?.delegate = try SSLService(usingConfiguration: SSLConfig)
+        #if os(OSX) || os(iOS)
+            
+        #elseif os(Linux)
+            if socket == nil { socket = try Socket.create(family: .inet6, type: .stream, proto: .tcp) }
+            socket?.delegate = try SSLService(usingConfiguration: SSLConfig)
+        #endif
     }
 }

@@ -26,7 +26,7 @@ struct DisconnectPacket: ControlPacket {
         return String(describing: ControlCode.disconnect)
     }
     
-    func write(writer: SocketWriter) throws {
+    func write(writer: ConnectionWriter) throws {
 	    var buffer = Data(capacity: 2)
 	    
         buffer.append(ControlCode.disconnect.rawValue.data)
@@ -34,7 +34,7 @@ struct DisconnectPacket: ControlPacket {
         try writer.write(from: buffer)
     }
 
-    func unpack(reader: SocketReader) {
+    func unpack(reader: ConnectionReader) {
     }
 
     func validate() -> MQTTErrors {

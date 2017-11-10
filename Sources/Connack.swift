@@ -37,7 +37,7 @@ extension ConnackPacket: ControlPacket {
         return String(describing: ControlCode.connack)
     }
 
-    mutating func write(writer: SocketWriter) throws {
+    mutating func write(writer: ConnectionWriter) throws {
         var buffer = Data(capacity: 128)
         
         buffer.append(ControlCode.connack.rawValue.data)
@@ -54,7 +54,7 @@ extension ConnackPacket: ControlPacket {
         }
     }
 
-    mutating func unpack(reader: SocketReader) {
+    mutating func unpack(reader: ConnectionReader) {
     }
 
     func validate() -> MQTTErrors {
