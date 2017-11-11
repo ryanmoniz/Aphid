@@ -22,8 +22,8 @@ public var config = Config.sharedInstance
 public struct Config {
     
     static var sharedInstance = Config()
-    
-    public var host = "localhost"
+    //h1xzer.messaging.internetofthings.ibmcloud.com
+    public var host = "h1xzer.messaging.internetofthings.ibmcloud.com"
     public var port: Int32 = 1883
     
     public var protocolName: String
