@@ -54,25 +54,29 @@ open class Sunapsis {
 
     // Initial Connect
     public func connect(withSSL: Bool = false, certPath: String? = nil, keyPath: String? = nil) throws {
-
+        
         #if os(OSX) || os(iOS)
-            //internal var socket = SocketFactory<MQTTStream>.sharedInstance()
             if socket == nil {
-                //socket = try SocketFactory<MQTTStream>.sharedInstance().create
+                //socket = try SocketFactory<MQTTStream>.sharedInstance()
+                
+                ///quick test using socket lib for unit tests
+                socket = SocketFactory<SocketLayer>.sharedInstance()
             }
         #elseif os(Linux)
             if socket == nil {
-                socket = try SocketFactory<SocketLayer>.sharedInstance().create(family: .inet6, type: .stream, proto: .tcp)
+                socket = SocketFactory<SocketLayer>.sharedInstance()
+                try socket!.setBlocking(mode: false)
             }
-        #endif
-
-        #if os(Linux)
-			try socket!.setBlocking(mode: false)
         #endif
         
         #if os(OSX) || os(iOS)
             if let _socket = socket {
-                try _socket.connect(to: config.host, port: config.port, timeout:10)
+                do {
+                    try _socket.connect(to: config.host, port: config.port, timeout:10)
+                } catch _ {
+                    print( "Error")
+                }
+                
             }
         #elseif os(Linux)
             try socket!.connect(to: config.host, port: config.port, timeout:10)

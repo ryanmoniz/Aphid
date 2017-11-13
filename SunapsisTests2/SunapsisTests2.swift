@@ -41,8 +41,13 @@ class SunapsisTests2: XCTestCase,MQTTDelegate {
         override func setUp() {
             super.setUp()
             
+            //localhost with mosquitto
             let clientId = "d:h1xzer:unit_test:sunapsis_simulator_test"
-            sunapsis = Sunapsis(clientId: clientId, cleanSess: true, username: "use-token-auth", password: "PtBVriRqIg4uh", host: "h1xzer.messaging.internetofthings.ibmcloud.com", port: 1883)
+            sunapsis = Sunapsis(clientId: clientId, cleanSess: true, username: nil, password: nil, host: "localhost", port: 1883)
+            
+            //watson IoT
+            //let clientId = "d:h1xzer:unit_test:sunapsis_simulator_test"
+            //sunapsis = Sunapsis(clientId: clientId, cleanSess: true, username: "use-token-auth", password: "PtBVriRqIg4uh", host: "h1xzer.messaging.internetofthings.ibmcloud.com", port: 1883)
             
             sunapsis.setWill(topic: "lastWillAndTestament/",message: "Client \(clientId) Closed Unexpectedly", willQoS: .atMostOnce, willRetain: false)
             

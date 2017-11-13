@@ -15,7 +15,6 @@ public protocol SocketBackend: ConnectionWriter, ConnectionReader {
     
     //MARK: Lifecycle
     init()
-    
     func connect(to host: String, port: Int32, timeout: UInt) throws
     func close()
 }

@@ -20,8 +20,13 @@ final class SocketLayer: SocketBackend {
         if socket == nil {
             socket = try Socket.create(family: .inet6, type: .stream, proto: .tcp)
         }
+        try socket!.setBlocking(mode: false)
+        do {
+            try socket!.connect(to: host, port: port)
+        } catch _ {
+            print ("Error")
+        }
         
-        try socket!.connect(to: config.host, port: config.port)
     }
     
     public func close() {
